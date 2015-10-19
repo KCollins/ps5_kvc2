@@ -7,6 +7,11 @@
 #include <stdio.h>  
 #include <std_msgs/Float64.h>
 #include <math.h>
+#define PI 3.141592653589
+double amplitude = 10;
+double frequency = 1;
+double a=2;  //amplitude factor for joint2 vs joint1
+double b=5; //frequency factor for joint2 vs joint1
 
 //a simple saturation function; provide saturation threshold, sat_val, and arg to be saturated, val
 double sat(double val, double sat_val) {
@@ -126,6 +131,9 @@ int main(int argc, char **argv) {
         joint_state_msg2.velocity.push_back(0.0);
 
 
+// Time index for sinusoids: 
+        std_msgs::Float64 input_float;
+
     while(ros::ok()) {  
 
     //Original code for joint 1:  
@@ -144,6 +152,9 @@ int main(int argc, char **argv) {
 
     joint_state_publisher.publish(joint_state_msg);
         
+        // New position command code to make the joint oscillate:
+    g_pos_cmd=amplitude*sin(2*PI*frequency*input_float.data);
+
         //ROS_INFO("q1 = %f;  q1dot = %f",q1,q1dot);
         //watch for periodicity
         q1_err= g_pos_cmd-q1;
@@ -182,6 +193,7 @@ int main(int argc, char **argv) {
 
     joint_state_publisher.publish(joint_state_msg2);
         
+        g_pos_cmd=a*amplitude*sin(2*PI*b*frequency*input_float.data);
         //ROS_INFO("q2 = %f;  q2dot = %f",q2,q2dot);
         //watch for periodicity
         q2_err= g_pos_cmd-q2;
@@ -203,6 +215,7 @@ int main(int argc, char **argv) {
         bool result2 = effort_cmd_srv_msg2.response.success;
         if (!result)
             ROS_WARN("service call to apply_joint_effort failed! (joint 2");
+        input_float.data = input_float.data + dt; //increment!
         ros::spinOnce();
     rate_timer.sleep();
   }
