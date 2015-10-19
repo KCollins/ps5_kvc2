@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     // set up the joint_state_msg2 fields to define a single joint,
     // called joint1, and initial position and vel values of 0
     joint_state_msg2.header.stamp = ros::Time::now();
-    joint_state_msg2.name.push_back("joint1");
+    joint_state_msg2.name.push_back("joint2");
         joint_state_msg2.position.push_back(0.0);
         joint_state_msg2.velocity.push_back(0.0);
 
