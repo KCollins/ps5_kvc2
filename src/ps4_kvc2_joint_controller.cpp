@@ -56,8 +56,14 @@ int main(int argc, char **argv) {
     ros::ServiceClient get_jnt_state_client = 
        nh.serviceClient<gazebo_msgs::GetJointProperties>("/gazebo/get_joint_properties");
 
+
+       //given messages for joint 1
     gazebo_msgs::ApplyJointEffort effort_cmd_srv_msg;
     gazebo_msgs::GetJointProperties get_joint_state_srv_msg;
+
+         //copied messages for joint 2
+    gazebo_msgs::ApplyJointEffort effort_cmd_srv_msg2;
+    gazebo_msgs::GetJointProperties get_joint_state_srv_msg2;
     
     ros::Publisher trq_publisher = nh.advertise<std_msgs::Float64>("jnt_trq", 1); 
     ros::Publisher vel_publisher = nh.advertise<std_msgs::Float64>("jnt_vel", 1);     
@@ -65,12 +71,21 @@ int main(int argc, char **argv) {
     ros::Publisher joint_state_publisher = nh.advertise<sensor_msgs::JointState>("joint_states", 1); 
 
     ros::Subscriber pos_cmd_subscriber = nh.subscribe("pos_cmd",1,posCmdCB); 
-     
+    
+
+    // given messages for joint 1 
     std_msgs::Float64 trq_msg;
     std_msgs::Float64 q1_msg,q1dot_msg;
     sensor_msgs::JointState joint_state_msg;
 
-    double q1, q1dot;
+     // copied messages for joint 2 
+    std_msgs::Float64 trq_msg2;
+    std_msgs::Float64 q2_msg,q2dot_msg;
+    sensor_msgs::JointState joint_state_msg2;
+
+    double q1, q1dot; //given msg for joint 1
+    double q2, q2dot; //copied msg for joint 2
+
     double dt = 0.01;
     ros::Duration duration(dt);
     ros::Rate rate_timer(1/dt);
@@ -79,9 +94,15 @@ int main(int argc, char **argv) {
     effort_cmd_srv_msg.request.effort = 0.0;
     effort_cmd_srv_msg.request.duration= duration;
 
+    effort_cmd_srv_msg2.request.joint_name = "joint2";
+    effort_cmd_srv_msg2.request.effort = 0.0;
+    effort_cmd_srv_msg2.request.duration= duration;
+
     get_joint_state_srv_msg.request.joint_name = "joint1";
+    get_joint_state_srv_msg.request.joint_name = "joint2";
     //double q1_des = 1.0;
-    double q1_err;
+    double q1_err; //given for joint 1
+    double q2_err; //copied for joint 2
     double Kp = 10.0;
     double Kv = 3;
     double trq_cmd;
@@ -92,7 +113,17 @@ int main(int argc, char **argv) {
 	joint_state_msg.name.push_back("joint1");
         joint_state_msg.position.push_back(0.0);
         joint_state_msg.velocity.push_back(0.0);
-    while(ros::ok()) {    
+
+    // copied/modified above code for joint 2:
+    joint_state_msg2.header.stamp = ros::Time::now();
+	joint_state_msg2.name.push_back("joint1");
+        joint_state_msg2.position.push_back(0.0);
+        joint_state_msg2.velocity.push_back(0.0);
+
+
+    while(ros::ok()) {  
+
+    //Original code for joint 1:  
         get_jnt_state_client.call(get_joint_state_srv_msg);
         q1 = get_joint_state_srv_msg.response.position[0];
         q1_msg.data = q1;
@@ -128,7 +159,45 @@ int main(int argc, char **argv) {
         //make sure service call was successful
         bool result = effort_cmd_srv_msg.response.success;
         if (!result)
-            ROS_WARN("service call to apply_joint_effort failed!");
+            ROS_WARN("service call to apply_joint_effort failed! (joint 1)");
+
+        //Copied, edited code block for joint 2:
+        get_jnt_state_client.call(get_joint_state_srv_msg2);
+        q2 = get_joint_state_srv_msg2.response.position[0];
+        q2_msg.data = q2;
+        pos_publisher.publish(q2_msg);
+        
+        q2dot = get_joint_state_srv_msg2.response.rate[0];
+        q2dot_msg.data = q2dot;
+        vel_publisher.publish(q2dot_msg);
+
+	joint_state_msg2.header.stamp = ros::Time::now();
+        joint_state_msg2.position[0] = q2; 
+        joint_state_msg2.velocity[0] = q2dot;
+
+	joint_state_publisher.publish(joint_state_msg2);
+        
+        //ROS_INFO("q2 = %f;  q2dot = %f",q2,q2dot);
+        //watch for periodicity
+        q2_err= g_pos_cmd-q2;
+        if (q2_err>M_PI) {
+            q2_err -= 2*M_PI;
+        }
+        if (q2_err< -M_PI) {
+            q2_err += 2*M_PI;
+        }        
+            
+        trq_cmd = Kp*(q2_err)-Kv*q2dot;
+        //trq_cmd = sat(trq_cmd, 10.0); //saturate at 1 N-m
+        trq_msg2.data = trq_cmd;
+        trq_publisher.publish(trq_msg2);
+        // send torque command to Gazebo
+        effort_cmd_srv_msg2.request.effort = trq_cmd;
+        set_trq_client.call(effort_cmd_srv_msg2);
+        //make sure service call was successful
+        bool result2 = effort_cmd_srv_msg2.response.success;
+        if (!result)
+            ROS_WARN("service call to apply_joint_effort failed! (joint 2");
         ros::spinOnce();
 	rate_timer.sleep();
   }
