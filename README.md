@@ -1,12 +1,26 @@
 # ps5_kvc2
 
-In this assignment, an existing 1DOF robot description was modified to become a 2DOF robot by adding 1 link and 1 joint. The minimal_joint_controller node was modified as well, in order to control the new joint, and a modified version of the minimal_robot.launch file is used to automatically open rviz and Gazebo, load the robot model, and activate the joint controller node to control the robot. 
+This package illustrates use of trajectory_msgs/JointTrajectory, using an action-server, action-client pair.
+It illustrates how to populate a JointTrajectory message, put this message in an action-server goal, and 
+send the goal request to a trajectory action server.  A simple sinusoid is used to define the example trajectory.
+It is sampled coarsely, at irregular intervals (intentionally).
+
+The corresponding server accepts and executes the goal.  The server interpolates between coarse values of trajectory points,
+resulting in smoother motion than pure execution of the verbatim trajectory.
+
+To see the effect of not interpolating, comment out the line:
+        fraction_of_range = (t_stream-t_previous)/(t_next-t_previous);
+in the action server.  Then, only the coarse points will be commanded, updated at the specified times.
+ 
 
 ## Example usage
-1) First terminal: roscd, catkin_make, roscore.
-2) Second terminal: roslaunch ps3_kvc2 ps3_kvc2.launch
-3) In the rviz GUI, set the "Fixed Frame" option on the left sidebar to "world." Then click "Add" and add in the RobotModel. 
+start the minimal robot with:
+`roslaunch minimal_robot_description minimal_robot.launch`
 
-## Running tests/demos
-1) In a new terminal, open rqt_plot; view jnt_vel, jnt_pos and jnt_trq.
-2) In Gazebo, experiment by adding in objects for the robot to interact with.
+Start the trajectory action server with:
+`rosrun example_trajectory example_trajectory_action_server`
+
+Start the trajectory action client with:
+`rosrun example_trajectory example_trajectory_action_client`
+
+Can see interpolation results with rqt_plot, plotting value /pos_cmd/data
