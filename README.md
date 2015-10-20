@@ -1,4 +1,4 @@
-# ps4_kvc2
+# ps5_kvc2
 
 In this assignment, an existing 1DOF robot description was modified to become a 2DOF robot by adding 1 link and 1 joint. The minimal_joint_controller node was modified as well, in order to control the new joint, and a modified version of the minimal_robot.launch file is used to automatically open rviz and Gazebo, load the robot model, and activate the joint controller node to control the robot. 
 

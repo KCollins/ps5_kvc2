@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ps4_kvc2)
+project(ps5_kvc2)
 
 find_package(catkin_simple REQUIRED)
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
@@ -18,7 +18,7 @@ catkin_simple()
 #cs_add_library(my_lib src/my_lib.cpp)   
 
 # Executables
-cs_add_executable(ps4_kvc2_joint_controller src/ps4_kvc2_joint_controller.cpp)
+cs_add_executable(ps5_kvc2_joint_controller src/ps5_kvc2_joint_controller.cpp)
 
 cs_install()
 cs_export()

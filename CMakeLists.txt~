@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ps4_kvc2)
+project(ps5_kvc2)
 
 find_package(catkin_simple REQUIRED)
 
