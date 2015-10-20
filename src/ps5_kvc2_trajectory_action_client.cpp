@@ -1,23 +1,23 @@
-// ps5_kvc2_trajectory_action_client: 
-// see complementary server, "ps5_kvc2_trajectory_action_server"
+// ps5_kvc2_action_client: 
+// see complementary server, "ps5_kvc2_action_server"
 // this simple node populates a trajectory message and sends it to the trajectory action server for execution
 // Run this together with minimal robot; start-up minimal robot with:   roslaunch minimal_robot_description minimal_robot.launch 
 
-#include<ros/ros.h>
+#include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
-#include<ps5_kvc2_trajectory/TrajActionAction.h>
+#include <ps5_kvc2/TrajActionAction.h>
 
 
 // This function will be called once when the goal completes
 // this is optional, but it is a convenient way to get access to the "result" message sent by the server
 void doneCb(const actionlib::SimpleClientGoalState& state,
-        const ps5_kvc2_trajectory::TrajActionResultConstPtr& result) {
+        const ps5_kvc2::TrajActionResultConstPtr& result) {
     ROS_INFO(" doneCb: server responded with state [%s]", state.toString().c_str());
 }
 
 int main(int argc, char** argv) {
         ros::init(argc, argv, "demo_trajectory_client_node"); // name this node 
-        ps5_kvc2_trajectory::TrajActionGoal goal; //instantiate a goal message compatible with our server, as defined in this package
+        ps5_kvc2::TrajActionGoal goal; //instantiate a goal message compatible with our server, as defined in this package
         // we will command a limited-duration sinusoidal motion; define amplitude, frequency and duration
 	double omega = 1.0; //rad/sec
         double amp = 0.5; //radians
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
         // below, we will randomize this dt, just to illustrate that trajectories do not have to have fixed time steps
 	double dt = 0.1; 
         
-        actionlib::SimpleActionClient<ps5_kvc2_trajectory::TrajActionAction> action_client("ps5_kvc2_traj_action_server", true);
+        actionlib::SimpleActionClient<ps5_kvc2::TrajActionAction> action_client("ps5_kvc2_traj_action_server", true);
         
         // attempt to connect to the server:
         ROS_INFO("waiting for server: ");
