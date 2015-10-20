@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
     joint_state_publisher.publish(joint_state_msg);
         
         // New position command code to make the joint oscillate:
-    g_pos_cmd=amplitude*sin(2*PI*frequency*input_float.data);
+    //g_pos_cmd=amplitude*sin(2*PI*frequency*input_float.data);
 
         //ROS_INFO("q1 = %f;  q1dot = %f",q1,q1dot);
         //watch for periodicity
@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
 
     joint_state_publisher.publish(joint_state_msg2);
         
-        g_pos_cmd=a*amplitude*sin(2*PI*b*frequency*input_float.data);
+        //g_pos_cmd=a*amplitude*sin(2*PI*b*frequency*input_float.data);
         //ROS_INFO("q2 = %f;  q2dot = %f",q2,q2dot);
         //watch for periodicity
         q2_err= g_pos_cmd-q2;
