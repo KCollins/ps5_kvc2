@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
         ps5_kvc2::TrajActionGoal goal; //instantiate a goal message compatible with our server, as defined in this package
         // we will command a limited-duration sinusoidal motion; define amplitude, frequency and duration
 	double omega = 1.0; //rad/sec
-        double amp = 0.5; //radians
-	double start_angle= amp;
+        double amp = 20; //radians
+	double start_angle= 0;//amp;
 	double final_phase = 4*3.1415927; // radians--two periods
         
         //dt: break up trajectory into incremental commands this far apart in time

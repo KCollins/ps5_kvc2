@@ -41,11 +41,11 @@
       <origin xyz="0 0 0.5" rpy="0 0 0"/>
       <geometry>
         <cylinder length="1" radius="0.1"/>
-        <!--box size="0.15 0.15 0.8"-->
+        <!-- box size="0.15 0.15 0.8" -->
       </geometry>
     </collision>
 
-    <visual>
+    <visual> 
       <origin xyz="0 0 0.5" rpy="0 0 0"/>
       <geometry>
         <cylinder length="1" radius="0.1"/>
@@ -78,7 +78,7 @@
       <origin xyz="0 0 0.5" rpy="0 0 0"/>
       <geometry>
         <cylinder length="1" radius="0.1"/>
-        <!--box size="0.15 0.15 0.8"-->
+        <!-- box size="0.15 0.15 0.8" -->
       </geometry>
     </collision>
 
