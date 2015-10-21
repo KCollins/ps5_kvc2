@@ -17,7 +17,12 @@ textfile="$(find ps5_kvc2)/src/ps5_kvc2_robot_description.urdf"/>
 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
 
 <node pkg="rviz" type="rviz" name="rviz"/>
- 
+
+<node pkg="rqt_plot" type="rqt_plot" name="rqt_plot"/>
+
+<node name= "ps5_kvc2_trajectory_action_server" pkg="ps5_kvc2" type= "ps5_kvc2_trajectory_action_server"/>
+<node name= "ps5_kvc2_trajectory_action_client" pkg="ps5_kvc2" type= "ps5_kvc2_trajectory_action_client"/>
+
 </launch>
 
 
