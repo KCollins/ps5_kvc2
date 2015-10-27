@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
     sensor_msgs::JointState joint_state_msg;
 
     double q1, q1dot;
-    double dt = 0.01;
+    double dt = 0.001;
     ros::Duration duration(dt);
     ros::Rate rate_timer(1/dt);
     
@@ -87,8 +87,8 @@ int main(int argc, char **argv) {
     get_joint_state_srv_msg.request.joint_name = "joint1";
     //double q1_des = 1.0;
     double q1_err;
-    double Kp = 10.0;
-    double Kv = 3;
+    double Kp = 100.0;
+    double Kv = 30;
     double trq_cmd;
 
     // set up the joint_state_msg fields to define a single joint,
