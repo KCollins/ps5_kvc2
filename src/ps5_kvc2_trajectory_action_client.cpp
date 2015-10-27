@@ -6,6 +6,7 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <ps5_kvc2/TrajActionAction.h>
+#include <cwru_msgs/VecOfDoubles.h>
 
 
 // This function will be called once when the goal completes
@@ -20,7 +21,7 @@ int main(int argc, char** argv) {
         ps5_kvc2::TrajActionGoal goal; //instantiate a goal message compatible with our server, as defined in this package
         // we will command a limited-duration sinusoidal motion; define amplitude, frequency and duration
 	double omega = 1.0; //rad/sec
-        double amp = 20; //radians
+        double amp = 2; //radians
 	double start_angle= 0;//amp;
 	double final_phase = 4*3.1415927; // radians--two periods
         
@@ -52,8 +53,9 @@ int main(int argc, char** argv) {
 	//one specifies the text names of joints in the variable-length array (vector) "joint_names"
         // ROS allows for putting these in any order, and for specifying all or only a subset of joints
         // the current ps5_kvc2 is not so tolerant--it requires specifying ALL joint command values in a FIXED order
-        // but for this simple ps5_kvc2, there is only 1 joint anyway
+        // but for this simple ps5_kvc2, there are only 2 joints 
 	trajectory.joint_names.push_back("joint1");
+    trajectory.joint_names.push_back("joint2");
 	// repeat the above command for every joint of the robot, in some preferred order
 	// joint position commands below must be specified in the same order as specified in the joint_names array
 	int njnts = trajectory.joint_names.size(); // we specified this many joints;  need same size for position and velocity vectors

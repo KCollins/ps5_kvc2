@@ -7,6 +7,7 @@
 #include <stdio.h>  
 #include <std_msgs/Float64.h>
 #include <math.h>
+#include <cwru_msgs/VecOfDoubles.h>
 #define PI 3.141592653589
 double amplitude = 10;
 double frequency = 1;
@@ -24,10 +25,12 @@ double sat(double val, double sat_val) {
 }
 
 double g_pos_cmd=0.0; //position command input-- global var
-void posCmdCB(const std_msgs::Float64& pos_cmd_msg) 
+double g_pos_cmd_2=0.0; //to control joint 2 separately...
+void posCmdCB(const cwru_msgs::VecOfDoubles& pos_cmd_msg) 
 { 
-  ROS_INFO("received value of pos_cmd is: %f",pos_cmd_msg.data); 
-  g_pos_cmd = pos_cmd_msg.data;
+  //ROS_INFO("received value of pos_cmd is: %f",pos_cmd_msg.data); 
+  g_pos_cmd = pos_cmd_msg.dbl_vec[0];
+  g_pos_cmd_2 = pos_cmd_msg.dbl_vec[1]; //another variable for controlling the second joint...
 } 
 
 
@@ -193,10 +196,10 @@ int main(int argc, char **argv) {
 
     joint_state_publisher.publish(joint_state_msg2);
         
-        //g_pos_cmd=a*amplitude*sin(2*PI*b*frequency*input_float.data);
+        //g_pos_cmd_2=a*amplitude*sin(2*PI*b*frequency*input_float.data);
         //ROS_INFO("q2 = %f;  q2dot = %f",q2,q2dot);
         //watch for periodicity
-        q2_err= g_pos_cmd-q2;
+        q2_err= g_pos_cmd_2-q2;
         if (q2_err>M_PI) {
             q2_err -= 2*M_PI;
         }

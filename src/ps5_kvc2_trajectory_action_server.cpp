@@ -2,11 +2,12 @@
 // accepts trajectory goals, interpolates between points linearly at specified dt
 // The velocity commands are ignored by this simple interpolator
 
-#include<ros/ros.h>
+#include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
-#include<ps5_kvc2/TrajActionAction.h>
+#include <ps5_kvc2/TrajActionAction.h>
 #include <std_msgs/Float64.h>
 #include <vector>
+#include <cwru_msgs/VecOfDoubles.h>
 
 using namespace std;
 
@@ -56,17 +57,26 @@ TrajectoryActionServer::TrajectoryActionServer(ros::NodeHandle* nodehandle):nh_(
     // do any other desired initializations here...specific to your implementation
     ROS_INFO("Initializing Publisher");
     //next line specialized for use with minimal_joint_controller:
-    jnt_cmd_publisher_ = nh_.advertise<std_msgs::Float64>("pos_cmd", 1, true); 
+    //jnt_cmd_publisher_ = nh_.advertise<std_msgs::Float64>("pos_cmd", 1, true);
+    jnt_cmd_publisher_ = nh_.advertise<cwru_msgs::VecOfDoubles>("pos_cmd", 1, true); 
     as_.start(); //start the server running
 }
 
 // helper function to encapsulate details of how to talk to the controller; need to specialize this for your controller
 void  TrajectoryActionServer::send_joint_commands_(vector <double> q_cmd_jnts) { 
     //for minimal_joint_controller, we only have one joint, and we command it with a publication
-    std_msgs::Float64 q_cmd_msg; //need this to send commands to minimal_joint_controller
-    q_cmd_msg.data = q_cmd_jnts[0]; // boring...only one component; really should check size, to make sure at least this component exists
+    cwru_msgs::VecOfDoubles q_cmd_msg; //need this to send commands to minimal_joint_controller
+    int njnts = q_cmd_jnts.size();
+    //q_cmd_msg.dbl_vec.resize(njnts);
+    //q_cmd_msg.dbl_vec = q_cmd_jnts;
+    for (int i=0;i<njnts;i++) {
+      q_cmd_msg.dbl_vec.push_back(q_cmd_jnts[i]);
+    }
+   
+   
+    //q_cmd_msg.data = q_cmd_jnts[0]; // boring...only one component; really should check size, to make sure at least this component exists
     jnt_cmd_publisher_.publish(q_cmd_msg); // this is how we talk to the minimal_joint_controller; change this for your target controller
-    ROS_INFO("commanding: %f",q_cmd_jnts[0]);
+    //ROS_INFO("commanding: %f",q_cmd_jnts[0]);
 }
    
    

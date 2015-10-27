@@ -5,6 +5,7 @@ find_package(catkin_simple REQUIRED)
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
 find_package(catkin REQUIRED genmsg)
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs genmsg)
+find_package(cwru_msgs)
 
 
 catkin_simple()
