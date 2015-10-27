@@ -15,12 +15,10 @@ in the action server.  Then, only the coarse points will be commanded, updated a
 
 ## Example usage
 start the minimal robot with:
-`roslaunch minimal_robot_description minimal_robot.launch`
+`roslaunch ps5_kvc2 ps5_kvc2.launch`
+This will automatically start the trajectory action server and client.
 
-Start the trajectory action server with:
-`rosrun example_trajectory example_trajectory_action_server`
-
-Start the trajectory action client with:
-`rosrun example_trajectory example_trajectory_action_client`
+Restart the trajectory action client with:
+`rosrun ps5_kvc2 ps5_kvc2_trajectory_action_client`
 
 Can see interpolation results with rqt_plot, plotting value /pos_cmd/data
